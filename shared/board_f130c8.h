@@ -1,0 +1,16 @@
+#ifndef BOARD_F103C8_H
+#define BOARD_F103C8_H
+
+#define UART_TABLE(X) \
+X( UART3_RX,	GPIOB,	11,	GPIO_IN) \
+X( UART3_TX,	GPIOB,	10,	GPIO_OUT)
+
+#define LEDS_TABLE(X) \
+X( LED_GREEN,	GPIOC,	13,	GPIO_OUT | GPIO_INV)
+
+#define GPIO_TABLE(X) \
+	UART_TABLE(X) 	\
+	LEDS_TABLE(X) \
+
+#endif /* BOARD_F103C8_H */
+
