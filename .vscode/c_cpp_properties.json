@@ -30,11 +30,12 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}",
+                "${workspaceFolder}/fw",
                 "${workspaceFolder}/shared",
-                "${workspaceFolder}/stm32fw/inc",
-                "${workspaceFolder}/stm32fw/core",
-                "${workspaceFolder}/stm32fw/modules",
-                "${workspaceFolder}/stm32fw/modules/led",
+                "${workspaceFolder}/fw/inc",
+                "${workspaceFolder}/fw/core",
+                "${workspaceFolder}/fw/modules",
+                "${workspaceFolder}/fw/modules/led",
                 "${workspaceFolder}/libs/FreeRTOS/include",
                 "${workspaceFolder}/libs/FreeRTOS/portable/GCC/ARM_CM3",
                 "${workspaceFolder}/libs/TinyStdio",
@@ -48,7 +49,7 @@
             "browse": {
                 "path": [
                     "${workspaceFolder}/shared",
-                    "${workspaceFolder}/stm32fw",
+                    "${workspaceFolder}/fw",
                     "${workspaceFolder}/libs"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
