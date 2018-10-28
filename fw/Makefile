@@ -41,7 +41,7 @@ CSRC += $(wildcard libs/FreeRTOS/portable/MemMang/heap_4.c)
 CSRC += $(wildcard syscalls/syscalls.c)
 
 
-LDSCRIPT := core/stm32l152rb.ld
+LDSCRIPT := core/stm32f1xx.ld
 
 FW_NAME = f103c8
 
