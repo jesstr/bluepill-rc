@@ -1,0 +1,16 @@
+--style=kr
+--indent=spaces=4
+--indent-switches
+--indent-preproc-define
+--indent-col1-comments
+--pad-oper
+--pad-comma
+--convert-tabs
+--indent-after-parens
+#--add-braces
+#--keep-one-line-blocks
+#--keep-one-line-statements
+--max-code-length=100
+--break-after-logical
+--align-pointer=name
+--align-reference=name
