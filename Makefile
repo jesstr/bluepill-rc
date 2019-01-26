@@ -41,3 +41,9 @@ erase:
 
 fwflash:	
 	st-flash --reset write output/fw.bin 0x8000000
+
+gdbfw:
+	arm-none-eabi-gdb -x .gdbinit_noflash
+
+gdbfwflash:
+	arm-none-eabi-gdb -x .gdbinit
