@@ -41,7 +41,7 @@ CSRC += $(wildcard libs/TinyStdio/*.c)
 
 CFLAGS += -DPRINTF_$(shell echo $(PRINTF) | tr a-z A-Z)
 CFLAGS += -DUSE_STDPERIPH_DRIVER 
-CFLAGS += -DSTM32F10X_MD_VL
+CFLAGS += -DSTM32F10X_MD
 
 #no IAP
 CFLAGS += -DSTANDALONE
