@@ -40,10 +40,17 @@ OBJ = $(COBJ) $(ASMOBJ)
 
 V = $(if $(VERBOSE), , @)
 
+RAM_SIZE_KB = 20
+FLASH_SIZE_KB = (64 - 1)
+
 all: prebuild $(BUILDDIR)/$(TARGET).bin postbuild
 	@$(SIZE) $(BUILDDIR)/$(TARGET).elf
-	@$(SIZE) $(BUILDDIR)/$(TARGET).elf -A | awk '/.data/ || /.bss/ {sum+=$$2} END{per=sum/8/1024*100 ; print "RAM: "  per"% ", sum " bytes (" 8*1024-sum " bytes free)"}'
-	@$(SIZE) $(BUILDDIR)/$(TARGET).elf -A | awk '/.fill/ {fill=$$2} END{per=(63*1024-fill)/63/1024*100 ; print "FLASH: "  per"% ", 63*1024-fill " bytes (" fill " bytes free)"}'
+	@$(SIZE) $(BUILDDIR)/$(TARGET).elf -A | awk '/.data/ || /.bss/ {sum+=$$2} \
+		END{per=sum/$(RAM_SIZE_KB)/1024*100; \
+		print "RAM: "  per"% ", sum " bytes (" $(RAM_SIZE_KB)*1024-sum " bytes free)"}'
+	@$(SIZE) $(BUILDDIR)/$(TARGET).elf -A | awk '/.fill/ {fill=$$2} \
+		END{per=($(FLASH_SIZE_KB)*1024-fill)/$(FLASH_SIZE_KB)/1024*100; \
+		print "FLASH: "  per"% ", $(FLASH_SIZE_KB)*1024-fill " bytes (" fill " bytes free)"}'
 	@echo =======================================================================
 
 $(BUILDDIR)/$(TARGET).bin: $(BUILDDIR)/$(TARGET).elf
