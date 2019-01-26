@@ -57,10 +57,10 @@ void gpio_init(void) {
 	}
 	
 	/* Disable the Serial Wire Jtag Debug Port SWJ-DP */
-	#if DEBUG != 1
-	AFIO->MAPR &= ~AFIO_MAPR_SWJ_CFG;
-	AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_DISABLE;
-	#endif
+	// #if DEBUG != 1
+	// AFIO->MAPR &= ~AFIO_MAPR_SWJ_CFG;
+	// AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_DISABLE;
+	// #endif
 }
 
 void gpio_set(gpio_t pin, bool value) {
