@@ -2,6 +2,7 @@
 #include "settings.h"
 #include "stm32f10x_crc.h"
 #include "stm32f10x_rcc.h"
+#include "stm32f10x_flash.h"
 #include "tinystdio.h"
 #include "string.h"
 

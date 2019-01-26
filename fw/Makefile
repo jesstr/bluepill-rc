@@ -15,16 +15,28 @@ ifeq ($(SWOTRACE), 1)
 	CFLAGS += -DSWOTRACE
 endif
 
-INCLUDES = -Ilibs/stm32f10x_periph/inc 
-INCLUDES += -Icore -Iinc -Isrc_fw
+#STM32 Standard Peripheral Library
+SPL_PATH = libs/STM32F10x_StdPeriph_Lib_V3.5.0/Library/
+
+INCLUDES = -I$(SPL_PATH)/STM32F10x_StdPeriph_Driver/inc
+INCLUDES += -I$(SPL_PATH)/CMSIS/CM3/CoreSupport
+INCLUDES += -I$(SPL_PATH)/CMSIS/CM3/DeviceSupport/ST/STM32F10x
+
+ASMSRC = $(SPL_PATH)/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO/startup_stm32f10x_md_vl.s
+CSRC = $(wildcard $(SPL_PATH)/STM32F10x_StdPeriph_Driver/src/*.c)
+CSRC += $(wildcard $(SPL_PATH)/CMSIS/CM3/DeviceSupport/ST/STM32F10x/*.c)
+
+#Application
+INCLUDES += -Iconf
+INCLUDES += -Iinc
+INCLUDES += -Isrc_fw
 INCLUDES += -Imodules/led
 INCLUDES += -I../shared
 INCLUDES += -Ilibs/TinyStdio
 
-CSRC = $(wildcard *.c core/*.c src/*.c)
+CSRC += $(wildcard src/*.c)
 CSRC += $(wildcard modules/led/*.c)
 CSRC += $(wildcard ../shared/*.c)
-CSRC += $(wildcard libs/stm32f10x_periph/src/*.c)
 CSRC += $(wildcard libs/TinyStdio/*.c)
 
 CFLAGS += -DPRINTF_$(shell echo $(PRINTF) | tr a-z A-Z)
@@ -41,7 +53,7 @@ CSRC += $(wildcard libs/FreeRTOS/portable/MemMang/heap_4.c)
 CSRC += $(wildcard syscalls/syscalls.c)
 
 
-LDSCRIPT := core/stm32f1xx.ld
+LDSCRIPT := conf/stm32f1xx.ld
 
 FW_NAME = f103c8
 

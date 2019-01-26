@@ -1,5 +1,6 @@
 #include "stm32f10x.h"
 #include "stm32f10x_rcc.h"
+#include "stm32f10x_usart.h"
 #include "usart.h"
 #include "common.h"
 #include "ring_buf.h"
