@@ -6,26 +6,26 @@
     "configurations": [
         {
             "cwd": "${workspaceRoot}",
-            "executable": "build/mt_tm01/stm32mt_tm01/stm32mt_tm01.elf",
+            "executable": "build/fw/fw.elf",
             "name": "Load",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "device": "STM32F407VE",
+            "device": "STM32F103C8",
             "configFiles": [
-                "${workspaceRoot}/projects/gcc/configs/stm32f4discovery.cfg"
+                "${workspaceRoot}/configs/stm321xx.cfg"
             ]
         },
         {
             "cwd": "${workspaceRoot}",
-            "executable": "build/mt_tm01/stm32mt_tm01/stm32mt_tm01.elf",
+            "executable": "build/fw/fw.elf",
             "name": "Attach",
             "request": "attach",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "device": "STM32F407VE",
+            "device": "STM32F103C8",
             "configFiles": [
-                "${workspaceRoot}/projects/gcc/configs/stm32f4discovery.cfg"
+                "${workspaceRoot}/configs/stm321xx.cfg"
             ]
         },
     ]
