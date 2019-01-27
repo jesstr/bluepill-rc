@@ -2,12 +2,8 @@
 #define USART_H
 
 #include <stdint.h>
-#define MODEM_USART        0        
-#define WIFI_USART         1
-#define AUU_USART          2 
-#define FLOWMETER_USART    3 
-#define ASUPR_USART        5 
 
+#define DEBUG_USART        0
 
 void uart_init(void);
 void uart_irq_enable(uint8_t indx_uarts);

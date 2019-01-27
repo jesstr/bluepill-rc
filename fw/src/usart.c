@@ -5,6 +5,7 @@
 #include "common.h"
 #include "ring_buf.h"
 #include "tinystdio.h"
+
 #include "FreeRTOS.h"
 #include "semphr.h"
 
@@ -13,7 +14,6 @@ uint32_t uart_baud_mass[] = { 1200, 2400, 4800, 9600, 19200, 38400, 57600, 11520
 typedef struct uart_s {
 	bool enabled;
 	unsigned baud;
-
 	USART_TypeDef *addr;
 	uint8_t *rx_fifo;
 	uint8_t *tx_fifo;
@@ -25,21 +25,21 @@ typedef struct uart_s {
 	SemaphoreHandle_t tx_buf_sem;
 } uart_t;
 
-#define MODEM_RBUF_SIZE 1024	// gcc-4.7 cannot handle const variable sizes
-static uint8_t modem_rx_fifo[MODEM_RBUF_SIZE];
-static uint8_t modem_tx_fifo[MODEM_RBUF_SIZE];
+#define DEBUG_USART_RBUF_SIZE 256
+
+static uint8_t debug_rx_fifo[DEBUG_USART_RBUF_SIZE];
+static uint8_t debug_tx_fifo[DEBUG_USART_RBUF_SIZE];
 
 #define FIN { 0 }, { 0 }, 0, 0
-#define UARTS_LEN 5
 
-static uart_t uarts[UARTS_LEN] = {
+static uart_t uarts[] = {
 	{
 		true,
 		115200,
 		USART1,
-		modem_rx_fifo,
-		modem_tx_fifo,
-		MODEM_RBUF_SIZE,
+		debug_rx_fifo,
+		debug_tx_fifo,
+		DEBUG_USART_RBUF_SIZE,
 		NULL,
 		FIN
 	}, {
@@ -112,7 +112,7 @@ void uart_irq_enable(uint8_t indx_uarts)
 }
 
 void uart_init(void) {
-	for (int i = 0; i < UARTS_LEN; ++i) {
+	for (unsigned char i = 0; i < array_len(uarts); ++i) {
 		if (!uarts[i].enabled) continue;
 		uarts[i].rx_buf_sem = xSemaphoreCreateCounting(uarts[i].buf_size, 0);
 		uarts[i].tx_buf_sem = xSemaphoreCreateCounting(uarts[i].buf_size, (uarts[i].buf_size-1));
@@ -175,7 +175,7 @@ void _putchar(uint8_t c) {
 #ifdef SWOTRACE
     ITM_SendChar(c);
 #else
-	uart_putchar(MODEM_USART, c);
+	uart_putchar(DEBUG_USART, c);
 #endif
 }
 
