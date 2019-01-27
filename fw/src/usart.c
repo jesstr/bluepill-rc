@@ -52,7 +52,6 @@ static uart_t uarts[] = {
 
 
 void _putc(void *p, char c);
-void _putchar(uint8_t c);
 
 void uart_hw_init(USART_TypeDef *uart, uint32_t baud, uint16_t wordlen, uint16_t parity,
     uint16_t stop)
@@ -174,19 +173,15 @@ int uart_getchar(uint8_t indx_uarts, unsigned timeout)
     return res;
 }
 
-void _putchar(uint8_t c)
-{
-#ifdef SWOTRACE
-    ITM_SendChar(c);
-#else
-    uart_putchar(DEBUG_USART, c);
-#endif
-}
-
 void _putc(void *p, char c)
 {
     (void)p;
-    _putchar(c);
+
+#ifdef SWOTRACE
+    ITM_SendChar((uint32_t)c);
+#else
+    uart_putchar(DEBUG_USART, (uint8_t)c);
+#endif
 }
 
 static void common_irq_handler(uint8_t indx_uarts)
