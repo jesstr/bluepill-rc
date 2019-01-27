@@ -1,8 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-// #define SYSCLK_FREQ_HSE	8000000
-
 #include "stm32f10x_conf.h"
 #include "stm32f10x.h"
 
