@@ -1,11 +1,6 @@
 TARGET := fw
 BUILDDIR = ../build/$(TARGET)
 
-
-ifeq ($(PRINTF),)
-	PRINTF = custom
-endif
-
 ifeq ($(DEBUG), 1)
 	CFLAGS += -DDEBUG -g
 endif
@@ -60,10 +55,6 @@ FW_NAME = f103c8
 -include ../Makefile.inc
 
 prebuild:
-ifeq ($(PRINTF),)
-	$(error No printf library selected, please choose one of "stdlib" or "custom") 
-endif
-	@echo "PRINTF: $(PRINTF)"
 
 postbuild: $(BUILDDIR)/$(TARGET).bin
 	@echo "Copying to: $(OUTPUTDIR)/$(FW_NAME).bin"

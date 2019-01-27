@@ -1,10 +1,5 @@
 #include "ds18b20_.h"
-#ifdef PRINTF_STDLIB
-#include <stdio.h>
-#endif
-#ifdef PRINTF_CUSTOM
 #include "tinystdio.h"
-#endif
 
 #include "FreeRTOS.h"
 #include "task.h"

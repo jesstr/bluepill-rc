@@ -1,10 +1,5 @@
 #include "one_wire.h"
-#ifdef PRINTF_STDLIB
-#include <stdio.h>
-#endif
-#ifdef PRINTF_CUSTOM
 #include "tinystdio.h"
-#endif
 
 one_wire_device one_wire_devices[10];
 u8 one_wire_device_count = 0;
