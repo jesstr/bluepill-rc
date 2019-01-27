@@ -1,46 +1,17 @@
 #include "common.h"
-#include "tinystdio.h"
-#include "FreeRTOS.h"
-#include "task.h"
-#include "systick.h"
-#include "gpio.h"
 #include "uptime.h"
 #include "led.h"
+#include "systick.h"
+#include "gpio.h"
 #include "usart.h"
+#include "tinystdio.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
 
 
 uint8_t ucHeap[configTOTAL_HEAP_SIZE];
 uint32_t crc __attribute__ ((section (".crc"))) = 0xAABBCCDD;
-
-
-/* OS stack overflow hook */
-#if (configCHECK_FOR_STACK_OVERFLOW > 0)
-void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed char *pcTaskName )
-{
-    volatile signed char *name;
-    volatile xTaskHandle *pxT;
-
-    name = pcTaskName;
-    pxT = pxTask;
-    (void)pxT;
-
-    DBG printf("vApplicationStackOverflowHook\r\n");
-    DBG printf("pcTaskName: %s\r\n", name);
-
-    while(1);
-}
-#endif
-
-
-/* OS malloc failed hook */
-#if (configUSE_MALLOC_FAILED_HOOK > 0)
-void vApplicationMallocFailedHook(void)
-{
-    DBG printf("vApplicationMallocFailedHook\r\n");
-
-    while(1);
-}
-#endif
 
 
 /* Init task, it runs all other tasks */
