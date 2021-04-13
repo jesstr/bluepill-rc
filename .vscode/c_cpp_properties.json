@@ -1,51 +1,17 @@
 {
     "configurations": [
         {
-            "name": "Mac",
-            "includePath": [
-                "/usr/include",
-                "/usr/local/include",
-                "${workspaceFolder}"
-            ],
-            "defines": [],
-            "intelliSenseMode": "clang-x64",
-            "browse": {
-                "path": [
-                    "/usr/include",
-                    "/usr/local/include",
-                    "${workspaceFolder}"
-                ],
-                "limitSymbolsToIncludedHeaders": true,
-                "databaseFilename": ""
-            },
-            "macFrameworkPath": [
-                "/System/Library/Frameworks",
-                "/Library/Frameworks"
-            ],
-            "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c11",
-            "cppStandard": "c++17"
-        },
-        {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}",
-                "${workspaceFolder}/fw",
                 "${workspaceFolder}/shared",
-                "${workspaceFolder}/fw/inc",
-                "${workspaceFolder}/fw/core",
-                "${workspaceFolder}/fw/modules",
-                "${workspaceFolder}/fw/modules/led",
-                "${workspaceFolder}/libs/FreeRTOS/include",
-                "${workspaceFolder}/libs/FreeRTOS/portable/GCC/ARM_CM3",
-                "${workspaceFolder}/libs/TinyStdio",
-                "${workspaceFolder}/libs/stm32f10x_periph/inc"
+                "${workspaceFolder}/fw",
+                "${workspaceFolder}/libs"
             ],
             "defines": [
                 "USE_STDPERIPH_DRIVER",
-                "STM32F10X_MD_VL"
+                "STM32F10X_MD"
             ],
-            "intelliSenseMode": "clang-x64",
+            "intelliSenseMode": "gcc-x64",
             "browse": {
                 "path": [
                     "${workspaceFolder}/shared",
@@ -55,32 +21,8 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             },
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/usr/bin/arm-none-eabi-gcc",
             "cStandard": "c99",
-            "cppStandard": "c++17"
-        },
-        {
-            "name": "Win32",
-            "includePath": [
-                "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include",
-                "${workspaceFolder}"
-            ],
-            "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE"
-            ],
-            "intelliSenseMode": "msvc-x64",
-            "browse": {
-                "path": [
-                    "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include/*",
-                    "${workspaceFolder}"
-                ],
-                "limitSymbolsToIncludedHeaders": true,
-                "databaseFilename": ""
-            },
-            "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c11",
             "cppStandard": "c++17"
         }
     ],
