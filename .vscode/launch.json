@@ -14,7 +14,20 @@
             "device": "STM32F103C8",
             "configFiles": [
                 "${workspaceRoot}/configs/stm321xx.cfg"
-            ]
+            ],
+            "swoConfig": {
+                "source": "probe",
+                "enabled": true,
+                "swoFrequency": 2000000,
+                "cpuFrequency": 72000000,
+                "decoders": [
+                    {
+                        "port": 0,
+                        "label": "Output",
+                        "type": "console",
+                    }
+                ]
+            }
         },
         {
             "cwd": "${workspaceRoot}",
@@ -26,7 +39,21 @@
             "device": "STM32F103C8",
             "configFiles": [
                 "${workspaceRoot}/configs/stm321xx.cfg"
-            ]
+            ],
+            "swoConfig": {
+                "source": "probe",
+                "enabled": true,
+                "swoFrequency": 2000000,
+                "cpuFrequency": 72000000,
+                "decoders": [
+                    {
+                        "port": 0,
+                        "label": "Output",
+                        "type": "console",
+                    }
+                ]
+            }
+
         },
     ]
 }
