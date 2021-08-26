@@ -115,8 +115,8 @@ void uart_init(void)
         if (!uarts[i].enabled) continue;
         uarts[i].rx_buf_sem = xSemaphoreCreateCounting(uarts[i].buf_size, 0);
         uarts[i].tx_buf_sem = xSemaphoreCreateCounting(uarts[i].buf_size, (uarts[i].buf_size - 1));
-        rbuf8_init(&uarts[i].tx_buf, uarts[i].tx_fifo, uarts[i].buf_size);
-        rbuf8_init(&uarts[i].rx_buf, uarts[i].rx_fifo, uarts[i].buf_size);
+        rbuf_init(&uarts[i].tx_buf, uarts[i].tx_fifo, uarts[i].buf_size, sizeof(uint8_t));
+        rbuf_init(&uarts[i].rx_buf, uarts[i].rx_fifo, uarts[i].buf_size, sizeof(uint8_t));
         uart_hw_init(uarts[i].addr, uarts[i].baud, 8, USART_Parity_No, USART_StopBits_1);
     }
     init_printf(NULL, _putc);
@@ -131,7 +131,7 @@ void uart_putchar(uint8_t indx_uarts, uint8_t byte)
     } else {
         xSemaphoreTake(uarts[indx_uarts].tx_buf_sem, portMAX_DELAY);
     }
-    rbuf8_put(&uarts[indx_uarts].tx_buf, byte);
+    rbuf_put(&uarts[indx_uarts].tx_buf, &byte);
     uarts[indx_uarts].addr->CR1 |= USART_CR1_TXEIE;
 }
 
@@ -149,8 +149,7 @@ int uart_send_block(uint8_t indx_uarts, void *data, uint8_t len)
             xSemaphoreTake(uarts[indx_uarts].tx_buf_sem, portMAX_DELAY);
         }
         s_temp = ((uint8_t *)data)[i++];
-        rbuf8_put(&uarts[indx_uarts].tx_buf, s_temp);
-
+        rbuf_put(&uarts[indx_uarts].tx_buf, &s_temp);
     }
     uarts[indx_uarts].addr->CR1 |= USART_CR1_TXEIE;
     return i;
@@ -169,7 +168,7 @@ int uart_getchar(uint8_t indx_uarts, unsigned timeout)
     if (res == pdFALSE) {
         return -1;
     }
-    rbuf8_get(&uarts[indx_uarts].rx_buf, &res);
+    rbuf_get(&uarts[indx_uarts].rx_buf, &res);
     return res;
 }
 
@@ -193,7 +192,7 @@ static void common_irq_handler(uint8_t indx_uarts)
         c = uarts[indx_uarts].addr->DR;
     }
     if (USART_GetITStatus(uarts[indx_uarts].addr, USART_IT_TXE) != RESET) {
-        if(rbuf8_get(&uarts[indx_uarts].tx_buf, &c)) {
+        if (rbuf_get(&uarts[indx_uarts].tx_buf, &c)) {
             uarts[indx_uarts].addr->DR = (uint16_t)c;
             xSemaphoreGiveFromISR(uarts[indx_uarts].tx_buf_sem, &xHigherPriorityTaskWoken);
         } else {
@@ -205,7 +204,7 @@ static void common_irq_handler(uint8_t indx_uarts)
     if(USART_GetITStatus(uarts[indx_uarts].addr, USART_IT_RXNE) != RESET) {
         c = uarts[indx_uarts].addr->DR;
         if (!rbuf_isfull(&uarts[indx_uarts].rx_buf))
-            rbuf8_put(&uarts[indx_uarts].rx_buf, c);
+            rbuf_put(&uarts[indx_uarts].rx_buf, &c);
         USART_ClearITPendingBit(uarts[indx_uarts].addr, USART_IT_RXNE);
         xSemaphoreGiveFromISR(uarts[indx_uarts].rx_buf_sem, &xHigherPriorityTaskWoken);
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);

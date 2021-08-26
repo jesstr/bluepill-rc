@@ -30,6 +30,7 @@ INCLUDES += -Imodules/usb/vcp/inc
 INCLUDES += -Imodules/usb/vcp
 INCLUDES += -I../shared
 INCLUDES += -Ilibs/TinyStdio
+INCLUDES += -Ilibs/ring_buf
 
 CSRC += $(wildcard src/*.c)
 CSRC += $(wildcard modules/led/*.c)
@@ -37,6 +38,7 @@ CSRC += $(wildcard modules/usb/vcp/src/*.c)
 CSRC += $(wildcard modules/usb/vcp/*.c)
 CSRC += $(wildcard ../shared/*.c)
 CSRC += $(wildcard libs/TinyStdio/*.c)
+CSRC += $(wildcard libs/ring_buf/*.c)
 
 CFLAGS += -DPRINTF_$(shell echo $(PRINTF) | tr a-z A-Z)
 CFLAGS += -DUSE_STDPERIPH_DRIVER 
