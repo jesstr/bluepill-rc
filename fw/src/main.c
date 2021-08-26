@@ -1,6 +1,7 @@
 #include "common.h"
 #include "uptime.h"
 #include "led.h"
+#include "usb.h"
 #include "systick.h"
 #include "gpio.h"
 #include "usart.h"
@@ -25,6 +26,10 @@ void InitTask(void *arg)
     xTaskCreate(led_task, "ledtask", configMINIMAL_STACK_SIZE, \
                 NULL, tskIDLE_PRIORITY, NULL);
 
+    /* USB task */
+    xTaskCreate(usb_task, "usbtask", configMINIMAL_STACK_SIZE, \
+                NULL, tskIDLE_PRIORITY, NULL);
+
     /* Successful boot */
     printf("MCU started at %u MHz\r\n", (unsigned int)SystemCoreClock);
 
@@ -45,7 +50,9 @@ int main(void)
     gpio_init();
     uart_init();
 
-    xTaskCreate( InitTask, "InitTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+    xTaskCreate(InitTask, "InitTask", configMINIMAL_STACK_SIZE,
+        NULL, tskIDLE_PRIORITY, NULL);
+
     vTaskStartScheduler();
 
     while(true);
