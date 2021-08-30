@@ -43,7 +43,6 @@
 #include "usb_desc.h"
 #include "usb_pwr.h"
 #include "hw_config.h"
-//#include "virtualComPort.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -52,10 +51,10 @@ uint8_t Request = 0;
 
 LINE_CODING linecoding =
   {
-    115200, /* baud rate*/
-    0x00,   /* stop bits-1*/
-    0x00,   /* parity - none*/
-    0x08    /* no. of bits 8*/
+    921600, /* baud rate */
+    0x00,   /* stop bits-1 */
+    0x00,   /* parity - none */
+    0x08    /* no. of bits 8 */
   };
 
 /* -------------------------------------------------------------------------- */
