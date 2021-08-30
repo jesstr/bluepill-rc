@@ -15,7 +15,7 @@
                 "base": "$gcc",
                 "fileLocation": [
                     "relative",
-                    "${workspaceFolder}/modules"
+                    "${workspaceFolder}/fw"
                 ]
             }
         },
@@ -31,7 +31,7 @@
                 "base": "$gcc",
                 "fileLocation": [
                     "relative",
-                    "${workspaceFolder}/modules"
+                    "${workspaceFolder}/fw"
                 ]
             }
         },
@@ -47,7 +47,7 @@
                 "base": "$gcc",
                 "fileLocation": [
                     "relative",
-                    "${workspaceFolder}/modules"
+                    "${workspaceFolder}/fw"
                 ]
             }
         },
@@ -63,7 +63,7 @@
                 "base": "$gcc",
                 "fileLocation": [
                     "relative",
-                    "${workspaceFolder}/modules"
+                    "${workspaceFolder}/fw"
                 ]
             }
         },
