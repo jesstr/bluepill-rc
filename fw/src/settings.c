@@ -12,7 +12,7 @@ static const struct sif_s {
 	uint32_t sett_magic;
 	uint32_t crc;
 	settings_t settings;
-} const *settings_flash = (struct sif_s *)(FLASH_OFFSET + SETTINGS_FLASH_PAGE*FLASH_PAGE_SIZE);
+} *settings_flash = (struct sif_s *)(FLASH_OFFSET + SETTINGS_FLASH_PAGE*FLASH_PAGE_SIZE);
 #pragma pack(pop)
 
 static const settings_t settings_def = {
