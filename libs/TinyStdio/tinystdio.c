@@ -453,6 +453,7 @@ void tfp_format(void *putp, putcf putf, const char *fmt, va_list va)
 # elif defined(SIZEOF_LONG_LONG) && SIZEOF_POINTER <= SIZEOF_LONG_LONG
                 lng = 2;
 # endif
+                break;
 #endif
             case 'x':
             case 'X':
