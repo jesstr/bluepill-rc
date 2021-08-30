@@ -3,6 +3,7 @@
 #include "stm32f10x_usart.h"
 #include "usart.h"
 #include "common.h"
+#include "hw_config.h"
 #include "ring_buf.h"
 #include "tinystdio.h"
 
@@ -179,7 +180,7 @@ void _putc(void *p, char c)
 #ifdef SWOTRACE
     ITM_SendChar((uint32_t)c);
 #else
-    uart_putchar(DEBUG_USART, (uint8_t)c);
+    CDC_Send_DATA((uint8_t*)&c, 1);
 #endif
 }
 

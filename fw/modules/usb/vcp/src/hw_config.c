@@ -45,6 +45,11 @@
 #include "hw_config.h"
 #include "usb_pwr.h"
 
+#include "common.h"
+#include "ring_buf.h"
+
+#include "FreeRTOS.h"
+#include "semphr.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Communication boards USART Interface */
@@ -55,22 +60,21 @@ ErrorStatus HSEStartUpStatus;
 
 EXTI_InitTypeDef EXTI_InitStructure;
 
-extern volatile uint32_t packet_sent;
-extern volatile uint8_t Send_Buffer[VIRTUAL_COM_PORT_DATA_SIZE] ;
-extern volatile uint32_t packet_receive;
-extern volatile uint8_t Receive_length;
 
-uint8_t Receive_Buffer[64];
+#define VCP_RBUF_SIZE   256
+
+static uint8_t vcp_rx_fifo[VCP_RBUF_SIZE];
+static uint8_t vcp_tx_fifo[VCP_RBUF_SIZE];
+
+rbuf_t vcp_rx_buf;
+rbuf_t vcp_tx_buf;
+
+SemaphoreHandle_t vcp_rx_sem;
 
 #ifdef VCP_RX_BY_DMA
 DMA_InitTypeDef  DMA_InitStructure;
 #endif
 
-uint32_t USART_Rx_ptr_in = 0;
-uint32_t USART_Rx_ptr_out = 0;
-uint32_t USART_Rx_length  = 0;
-
-uint8_t  USB_Tx_State = 0;
 static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len);
 /* Extern variables ----------------------------------------------------------*/
 
@@ -412,24 +416,15 @@ static void IntToUnicode(uint32_t value , uint8_t *pbuf , uint8_t len)
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-uint32_t CDC_Send_DATA(uint8_t *ptrBuffer, uint8_t Send_length)
+uint8_t CDC_Send_DATA(uint8_t *ptrBuffer, uint8_t Send_length)
 {
-  /*if max buffer is Not reached*/
-  if(Send_length < VIRTUAL_COM_PORT_DATA_SIZE)     
-  {
-    /*Sent flag*/
-    packet_sent = 0;
-    /* send  packet to PMA*/
-    while(GetEPTxStatus(ENDP1)==EP_TX_VALID);
-    UserToPMABufferCopy((unsigned char*)ptrBuffer, ENDP1_TXADDR, Send_length);
-    SetEPTxCount(ENDP1, Send_length);
-    SetEPTxValid(ENDP1);
+  uint8_t sent = 0;
+
+  while (Send_length-- && rbuf_put(&vcp_tx_buf, ptrBuffer++)) {
+    sent++;
   }
-  else
-  {
-    return 0;
-  } 
-  return 1;
+
+  return sent;
 }
 
 /*******************************************************************************
@@ -439,12 +434,36 @@ uint32_t CDC_Send_DATA(uint8_t *ptrBuffer, uint8_t Send_length)
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-uint32_t CDC_Receive_DATA(void)
+uint8_t CDC_Receive_DATA(uint8_t *buf, uint32_t timeout)
 { 
-  /*Receive flag*/
-  packet_receive = 0;
-  SetEPRxValid(ENDP3); 
-  return 1;
+  uint8_t len = 0;
+
+  SetEPRxValid(ENDP3);
+
+  if (isInterrupt()) {
+      if (xSemaphoreTakeFromISR(vcp_rx_sem, NULL) != pdTRUE) {
+          return 0;
+      }
+  } else {
+      if (xSemaphoreTake(vcp_rx_sem, (TickType_t)timeout) != pdTRUE) {
+          return 0;
+      }
+  }
+  while (rbuf_get(&vcp_rx_buf, buf++) &&
+    (len++ < VIRTUAL_COM_PORT_DATA_SIZE)) {
+    ;
+  }
+
+  return len;
+}
+
+
+void CDC_Init(void)
+{
+  rbuf_init(&vcp_rx_buf, vcp_rx_fifo, VCP_RBUF_SIZE, sizeof(uint8_t));
+  rbuf_init(&vcp_tx_buf, vcp_tx_fifo, VCP_RBUF_SIZE, sizeof(uint8_t));
+
+  vcp_rx_sem = xSemaphoreCreateCounting(VCP_RBUF_SIZE, 0);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

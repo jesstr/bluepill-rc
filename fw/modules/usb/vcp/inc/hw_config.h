@@ -66,8 +66,9 @@ void Leave_LowPowerMode(void);
 void USB_Interrupts_Config(void);
 void USB_Cable_Config (FunctionalState NewState);
 void Get_SerialNum(void);
-uint32_t CDC_Send_DATA (uint8_t *ptrBuffer, uint8_t Send_length);
-uint32_t CDC_Receive_DATA(void);
+void CDC_Init(void);
+uint8_t CDC_Send_DATA(uint8_t *ptrBuffer, uint8_t Send_length);
+uint8_t CDC_Receive_DATA(uint8_t *buf, uint32_t timeout);
 /* External variables --------------------------------------------------------*/
 
 #endif  /*__HW_CONFIG_H*/

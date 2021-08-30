@@ -44,20 +44,46 @@
 #include "usb_istr.h"
 #include "usb_pwr.h"
 
+#include "ring_buf.h"
 #include "tinystdio.h"
+
+#include "FreeRTOS.h"
+#include "semphr.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-extern volatile uint32_t packet_sent;
-extern volatile uint32_t packet_receive;
-extern volatile uint8_t Receive_Buffer[64];
-uint32_t Receive_length;
+extern SemaphoreHandle_t vcp_rx_sem;
+extern rbuf_t vcp_rx_buf;
+extern rbuf_t vcp_tx_buf;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
+/*******************************************************************************
+* Function Name  : SOF_Callback
+* Description    :
+* Input          : None.
+* Output         : None.
+* Return         : None.
+*******************************************************************************/
+void SOF_Callback(void)
+{
+    static uint8_t buf[VIRTUAL_COM_PORT_DATA_SIZE];
+    uint8_t len = 0;
+
+    while (rbuf_get(&vcp_tx_buf, &buf[len]) &&
+        (len++ < VIRTUAL_COM_PORT_DATA_SIZE)) {
+        ;
+    }
+    if (len > 0) {
+        UserToPMABufferCopy((unsigned char *)buf, ENDP1_TXADDR, len);
+        SetEPTxCount(ENDP1, len);
+        SetEPTxValid(ENDP1);
+    }
+}
+
 /*******************************************************************************
 * Function Name  : EP1_IN_Callback
 * Description    :
@@ -66,9 +92,8 @@ uint32_t Receive_length;
 * Return         : None.
 *******************************************************************************/
 
-void EP1_IN_Callback (void)
+void EP1_IN_Callback(void)
 {
-  packet_sent = 1;
 }
 
 /*******************************************************************************
@@ -80,9 +105,21 @@ void EP1_IN_Callback (void)
 *******************************************************************************/
 void EP3_OUT_Callback(void)
 {
-  packet_receive = 1;
-  Receive_length = GetEPRxCount(ENDP3);
-  PMAToUserBufferCopy((unsigned char*)Receive_Buffer, ENDP3_RXADDR, Receive_length);
+    uint8_t buf[VIRTUAL_COM_PORT_DATA_SIZE];
+    uint8_t *pbuf = buf;
+    static BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    uint32_t len = GetEPRxCount(ENDP3);
+    len = len > VIRTUAL_COM_PORT_DATA_SIZE ?
+        VIRTUAL_COM_PORT_DATA_SIZE : len;
+
+    if (len) {
+        PMAToUserBufferCopy((unsigned char *)buf, ENDP3_RXADDR, len);
+        while (len-- && rbuf_put(&vcp_rx_buf, pbuf++)) {
+            ;
+        }
+        xSemaphoreGiveFromISR(vcp_rx_sem, &xHigherPriorityTaskWoken);
+    }
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
