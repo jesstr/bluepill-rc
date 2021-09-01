@@ -4,7 +4,7 @@
 
 
 gpio_pindef_t gpio_pins[] = {
-	GPIO_TABLE(EXPAND_AS_DEFS)
+	GPIO_TABLE(GPIO_EXPAND_AS_DEFS)
 };
 
 

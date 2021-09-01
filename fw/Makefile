@@ -26,6 +26,7 @@ INCLUDES += -Iconf
 INCLUDES += -Iinc
 INCLUDES += -Isrc_fw
 INCLUDES += -Imodules/led
+INCLUDES += -Imodules/adc
 INCLUDES += -Imodules/usb/vcp/inc
 INCLUDES += -Imodules/usb/vcp
 INCLUDES += -I../shared
@@ -34,6 +35,7 @@ INCLUDES += -Ilibs/ring_buf
 
 CSRC += $(wildcard src/*.c)
 CSRC += $(wildcard modules/led/*.c)
+CSRC += $(wildcard modules/adc/*.c)
 CSRC += $(wildcard modules/usb/vcp/src/*.c)
 CSRC += $(wildcard modules/usb/vcp/*.c)
 CSRC += $(wildcard ../shared/*.c)

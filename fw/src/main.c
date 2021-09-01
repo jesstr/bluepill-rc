@@ -5,6 +5,7 @@
 #include "systick.h"
 #include "gpio.h"
 #include "usart.h"
+#include "adc.h"
 #include "tinystdio.h"
 
 #include "FreeRTOS.h"
@@ -50,7 +51,10 @@ int main(void)
     gpio_init();
     uart_init();
 
-    xTaskCreate(InitTask, "InitTask", configMINIMAL_STACK_SIZE,
+    xTaskCreate(InitTask, "init", configMINIMAL_STACK_SIZE,
+        NULL, tskIDLE_PRIORITY, NULL);
+
+    xTaskCreate(adc_task, "adc", configMINIMAL_STACK_SIZE,
         NULL, tskIDLE_PRIORITY, NULL);
 
     vTaskStartScheduler();
